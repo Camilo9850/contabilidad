@@ -1,0 +1,55 @@
+.navbar-dark.bg-dark {
+  background: linear-gradient(135deg, #0d3c7d, #00bfff);
+  box-shadow: 0 4px 15px rgba(0,180,255,0.5);
+}
+
+.sidebar {
+  background: linear-gradient(180deg, #001f4d, #0d3c7d);
+  border-right: 2px solid rgba(0,180,255,0.3);
+}
+
+.sidebar .nav-item:hover {
+  background-color: rgba(0,180,255,0.2);
+  border-radius: 0.5rem;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #00bfff, #0d3c7d);
+  color: #fff;
+  border-radius: 0.6rem;
+  box-shadow: 0 0 10px rgba(0,180,255,0.6);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #0d3c7d, #00e0ff);
+  box-shadow: 0 0 20px rgba(0,220,255,0.7);
+}
+
+.card {
+  background: rgba(10, 25, 60, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  box-shadow: 0 0 20px rgba(0,120,255,0.5);
+  color: #e0e7ff;
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: radial-gradient(white, transparent 2px) repeat;
+  background-size: 50px 50px;
+  opacity: 0.1;
+  animation: starMove 60s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes starMove {
+  0% { transform: translate(0,0); }
+  100% { transform: translate(100px, 100px); }
+}

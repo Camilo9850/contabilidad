@@ -15,6 +15,7 @@
   <link href="{{ asset('css/dataTables.bootstrap4.css') }}" rel="stylesheet" type="text/css">
   <link href="{{ asset('css/sb-admin.css') }}" rel="stylesheet" type="text/css">
   <link href="{{ asset('css/estilos.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ asset('css/menu.css') }}" rel="stylesheet" type="text/css">
   <link href="{{ asset('css/fontawesome/css/fontawesome.min.css') }}" rel="stylesheet" type="text/css">
   <script src="{{ asset('js/jquery.min.js') }}"></script>
   <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
