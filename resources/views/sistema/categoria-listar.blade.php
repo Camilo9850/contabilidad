@@ -1,6 +1,6 @@
 @extends('plantilla')
 
-@section('titulo', "Listado del menú")
+@section('titulo', "Listado del categoria")
 
 @section('scripts')
 <link href="{{ asset('css/datatables.min.css') }}" rel="stylesheet">
@@ -9,17 +9,17 @@
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/home">Inicio</a></li>
-    <li class="breadcrumb-item active">Men&uacute;</a></li>
+    <li class="breadcrumb-item active">Categorias</a></li>
 </ol>
 <ol class="toolbar">
     <li class="btn-item">
-        <a title="Nuevo" href="/admin/sistema/menu/nuevo">
+        <a title="Nuevo" href="/admin/sistema/categoria/nuevo">
             <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
             <span>Nuevo</span>
         </a>
     </li>
     <li class="btn-item">
-        <a title="Recargar" href="#" onclick='window.location.replace("/admin/sistema/menu");'>
+        <a title="Recargar" href="#" onclick='window.location.replace("/admin/sistema/categoria");'>
             <i class="fa-solid fa-rotate" aria-hidden="true"></i>
             <span>Recargar</span>
         </a>
@@ -37,8 +37,6 @@ if (isset($msg)) {
     <thead>
         <tr>
             <th>Nombre</th>
-            <th>Padre</th>
-            <th>URL</th>
             <th>Activo</th>
         </tr>
     </thead>
@@ -52,7 +50,7 @@ if (isset($msg)) {
 	    "bSearchable": true,
         "pageLength": 25,
         "order": [[ 0, "asc" ]],
-	    "ajax": "{{ route('menu.cargarGrilla') }}"
+	    "ajax": "{{ route('categoria.cargarGrilla') }}"
 	});
 </script>
 @endsection

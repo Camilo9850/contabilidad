@@ -97,3 +97,13 @@ Route::get('/admin/patente/cargarGrilla', 'ControladorPatente@cargarGrilla')->na
 Route::get('/admin/patente/eliminar', 'ControladorPatente@eliminar');
 Route::get('/admin/patente/nuevo/{id}', 'ControladorPatente@editar');
 Route::post('/admin/patente/nuevo/{id}', 'ControladorPatente@guardar');
+
+
+/* --------------------------------------------- */
+/* CONTROLADOR CATEGORIA                          */
+/* --------------------------------------------- */
+Route::get('/admin/categoria/nuevo', 'ControladorCategoria@index');
+Route::get('/admin/categoria', 'ControladorCategoria@nuevo');
+Route::post('/admin/categoria', 'ControladorCategoria@guardar')->name('categoria.guardar');
+Route::get('/admin/categoria/cargarGrilla', 'ControladorCategoria@cargarGrilla')->name('categoria.cargarGrilla');
+Route::get('/admin/categoria/nuevo/{id}', 'ControladorCategoria@editar');

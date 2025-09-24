@@ -2,8 +2,8 @@ body {
   background: url('https://images.unsplash.com/photo-1514828132111-cd75086bb94c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NTIyMDF8MHwxfHNlYXJjaHw1fHxuZWJ1bGFzfGVufDB8fHx8MTcwMDgxNjk1NHww&ixlib=rb-4.0.3&q=80&w=1080') no-repeat center center fixed;
   background-size: cover;
   min-height: 100vh;
-  display: flex;
-  align-items: center;
+  display:
+  align-it flex;ems: center;
   justify-content: center;
   font-family: 'Poppins', sans-serif;
   position: relative;

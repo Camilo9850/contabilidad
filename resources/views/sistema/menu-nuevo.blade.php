@@ -13,13 +13,32 @@
     <li class="breadcrumb-item active">Modificar</li>
 </ol>
 <ol class="toolbar">
-    <li class="btn-item"><a title="Nuevo" href="/admin/sistema/menu/nuevo" class="fa fa-plus-circle" aria-hidden="true"><span>Nuevo</span></a></li>
-    <li class="btn-item"><a title="Guardar" href="#" class="fa fa-floppy-o" aria-hidden="true" onclick="javascript: $('#modalGuardar').modal('toggle');"><span>Guardar</span></a>
+    <li class="btn-item">
+        <a title="Nuevo" href="/admin/sistema/menu/nuevo">
+            <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
+            <span>Nuevo</span>
+        </a>
     </li>
-    @if($globalId > 0)
-    <li class="btn-item"><a title="Guardar" href="#" class="fa fa-trash-o" aria-hidden="true" onclick="javascript: $('#mdlEliminar').modal('toggle');"><span>Eliminar</span></a></li>
-    @endif
-    <li class="btn-item"><a title="Salir" href="#" class="fa fa-arrow-circle-o-left" aria-hidden="true" onclick="javascript: $('#modalSalir').modal('toggle');"><span>Salir</span></a></li>
+    <li class="btn-item">
+        <a title="Guardar" href="#" onclick="javascript: $('#modalGuardar').modal('toggle');">
+            <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+            <span>Guardar</span>
+        </a>
+    </li>
+    @if($globalId > 0)
+    <li class="btn-item">
+        <a title="Eliminar" href="#" onclick="javascript: $('#mdlEliminar').modal('toggle');">
+            <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+            <span>Eliminar</span>
+        </a>
+    </li>
+    @endif
+    <li class="btn-item">
+        <a title="Salir" href="#" onclick="javascript: $('#modalSalir').modal('toggle');">
+            <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i>
+            <span>Salir</span>
+        </a>
+    </li>
 </ol>
 <script>
 function fsalir(){

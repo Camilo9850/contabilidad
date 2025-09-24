@@ -122,6 +122,7 @@ class ControladorMenu extends Controller
         }
     }
 
+
     public function guardar(Request $request) {
         try {
             //Define la entidad servicio
