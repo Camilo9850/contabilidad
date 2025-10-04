@@ -1,0 +1,57 @@
+SOLUCIÓN INTEGRAL PARA EL PROBLEMA DE ELIMINACIÓN
+
+1. ACTUALIZA EL CONTROLADOR (FacturacionController.php):
+
+public function eliminar(Request $request)
+{
+    $id = $request->input('id');
+    
+    $facturacion = Facturacion::find($id);
+    if (!$facturacion) {
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['err' => '1', 'msg' => 'Facturación no encontrada'], 404);
+        }
+        return redirect()->route('facturacion.index')->with('error', 'Facturación no encontrada');
+    }
+
+    try {
+        $facturacion->delete();
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['err' => '0', 'msg' => 'Registro eliminado exitosamente.']);
+        } else {
+            return redirect()->route('facturacion.index')->with('success', 'Facturación eliminada correctamente');
+        }
+    } catch (\Exception $e) {
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['err' => '1', 'msg' => 'Error al eliminar el registro: ' . $e->getMessage()], 500);
+        } else {
+            return redirect()->route('facturacion.index')->with('error', 'Error al eliminar la facturación');
+        }
+    }
+}
+
+2. ACTUALIZA LAS RUTAS (routes/web.php):
+
+// Reemplaza la ruta de eliminación por esta:
+Route::post('/admin/facturacion/eliminar', 'FacturacionController@eliminar')->name('facturacion.eliminar');
+
+// Asegúrate de que otras rutas no interfieran:
+Route::get('/admin/facturacion', 'FacturacionController@index')->name('facturacion.index');
+Route::get('/admin/facturacion/nuevo', 'FacturacionController@nuevo')->name('facturacion.nuevo');
+Route::post('/admin/facturacion', 'FacturacionController@guardar')->name('facturacion.guardar');
+Route::get('/admin/facturacion/{id}/editar', 'FacturacionController@editar')->name('facturacion.editar');
+Route::put('/admin/facturacion/{id}', 'FacturacionController@guardar')->name('facturacion.actualizar');
+
+3. ACTUALIZA LA VISTA (facturacion-listar.blade.php):
+
+<form method="POST" action="{{ route('facturacion.eliminar') }}" style="display:inline;">
+    @csrf
+    <input type="hidden" name="id" value="{{ $fact->id_factura }}">
+    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Desea eliminar esta facturación?')">Eliminar</button>
+</form>
+
+4. DESPUÉS DE REALIZAR ESTOS CAMBIOS, EJECUTA EN CONSOLA:
+php artisan route:clear
+php artisan config:clear
+
+ESTA SOLUCIÓN EVITA POR COMPLETO EL USO DE MÉTODOS HTTP COMO DELETE QUE PUEDEN NO ESTAR SOPORTADOS EN TU ENTORNO XAMPP/APACHE.

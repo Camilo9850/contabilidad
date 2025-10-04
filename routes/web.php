@@ -11,6 +11,7 @@
 |
  */
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SucursalController;
 
 /*Route::get('/time' , function(){$date =new Carbon;echo $date ; } );*/
 
@@ -28,7 +29,6 @@ Route::group(array('domain' => '127.0.0.1'), function () {
 /* --------------------------------------------- */
     Route::get('/admin/login', 'ControladorLogin@index');
     Route::get('/admin/logout', 'ControladorLogin@logout');
-    Route::post('/admin/logout', 'ControladorLogin@entrar');
     Route::post('/admin/login', 'ControladorLogin@entrar');
 
 /* --------------------------------------------- */
@@ -107,3 +107,29 @@ Route::get('/admin/categoria', 'ControladorCategoria@nuevo');
 Route::post('/admin/categoria', 'ControladorCategoria@guardar')->name('categoria.guardar');
 Route::get('/admin/categoria/cargarGrilla', 'ControladorCategoria@cargarGrilla')->name('categoria.cargarGrilla');
 Route::get('/admin/categoria/nuevo/{id}', 'ControladorCategoria@editar');
+
+/* --------------------------------------------- */
+/* CONTROLADOR CONTABILIDAD                         */
+/* --------------------------------------------- */
+Route::get('/admin/contabilidad/nuevo', 'ContabilidadController@index')->name('contabilidad.index');
+Route::get('/admin/contabilidad', 'ContabilidadController@listar')->name('contabilidad.listado');
+Route::get('/admin/contabilidad/editar/{id}', 'ContabilidadController@editar')->name('contabilidad.editar');
+Route::post('/admin/contabilidad', 'ContabilidadController@guardar')->name('contabilidad.guardar');
+Route::post('/admin/contabilidad/eliminar', 'ContabilidadController@eliminar')->name('contabilidad.eliminar');
+Route::get('/admin/contabilidad/cargarGrilla', 'ContabilidadController@cargarGrilla')->name('contabilidad.cargarGrilla');
+
+
+
+
+/* --------------------------------------------- */
+/* CONTROLADOR SUCURSALES                        */
+/* --------------------------------------------- */
+Route::get('/admin/sucursal', 'SucursalController@listar')->name('sucursal.listado');
+Route::get('/admin/sucursal/nuevo', 'SucursalController@index');
+Route::get('/admin/sucursal/nuevo/{id}', 'SucursalController@editar')->name('sucursal.editar');
+Route::get('/sucursal/listar', 'SucursalController@listar')->name('sucursal.listar');
+Route::get('/admin/sucursal/cargarGrilla', 'SucursalController@cargarGrilla')->name('sucursal.cargarGrilla');
+Route::post('/admin/sucursal', 'SucursalController@guardar')->name('sucursal.guardar');
+Route::match(['get', 'post'], '/admin/sucursal/eliminar', 'SucursalController@eliminar')->name('sucursal.eliminar');
+
+

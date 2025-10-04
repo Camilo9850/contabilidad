@@ -7,18 +7,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>@yield('titulo') - {{ env('APP_NAME') }}</title>
   <link rel="icon" href="{{ asset('images/favicon.png') }}">
   <link href="{{ asset('css/normalize.css') }}" rel="stylesheet" type="text/css">
   <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
   <link href="{{ asset('css/bootstrap-select.min.css') }}" rel="stylesheet" type="text/css">
-  <link href="{{ asset('css/fontawesome/css/all.min.css') }}" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="{{ asset('css/dataTables.bootstrap4.css') }}" rel="stylesheet" type="text/css">
   <link href="{{ asset('css/sb-admin.css') }}" rel="stylesheet" type="text/css">
   <link href="{{ asset('css/estilos.css') }}" rel="stylesheet" type="text/css">
   <link href="{{ asset('css/menu.css') }}" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-ieo3wXJt9/TfQ1gB1oD4l5B11g3k5Zk2s8D4l6t8bB/F9z7t+y5oN+a9l3x0aJb3Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <script src="{{ asset('js/jquery.min.js') }}"></script>
   <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ asset('js/jquery.easing.min.js') }}"></script>
