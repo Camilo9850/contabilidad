@@ -45,7 +45,7 @@ class ContabilidadController extends Controller
 
     public function guardar(Request $request)
     {
-    dd($request->all());
+  
         $request->validate([
             'txtFecha' => 'required|date',
             'lstTipoMovimiento' => 'required|in:INGRESO,EGRESO,TRANSFERENCIA',

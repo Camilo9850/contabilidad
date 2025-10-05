@@ -65,67 +65,71 @@ if (isset($msg)) {
     @csrf
     <div class="row">
         
-        {{-- CAMPO ID OCULTO (idcliente) --}}
-        {{-- El valor se extrae de $cliente->idcliente --}}
-        <input type="hidden" id="id" name="id" class="form-control" 
-               value="{{ $cliente->idcliente ?? 0 }}" required>
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
         
         {{-- 1. NOMBRE (VARCHAR 50) --}}
         <div class="form-group col-lg-6">
             <label for="txtNombre">Nombre: *</label>
             <input type="text" id="txtNombre" name="nombre" class="form-control" 
-                   value="{{ $cliente->nombre ?? '' }}" required>
+            value="{{ old('nombre') }}" required>
         </div>
         
         {{-- 2. APELLIDO (VARCHAR 50) --}}
         <div class="form-group col-lg-6">
             <label for="txtApellido">Apellido:</label>
             <input type="text" id="txtApellido" name="apellido" class="form-control" 
-                   value="{{ $cliente->apellido ?? '' }}">
+            value="{{ old('apellido') }}">
         </div>
-
+ 
         {{-- 3. TELÉFONO (INT 10) --}}
         <div class="form-group col-lg-6">
             <label for="txtTelefono">Teléfono (Fijo):</label>
             <input type="number" id="txtTelefono" name="telefono" class="form-control" 
-                   value="{{ $cliente->telefono ?? '' }}">
+            value="{{ old('telefono') }}">
         </div>
         
         {{-- 4. CELULAR (VARCHAR 50) --}}
         <div class="form-group col-lg-6">
             <label for="txtCelular">Celular:</label>
             <input type="text" id="txtCelular" name="celular" class="form-control" 
-                   value="{{ $cliente->celular ?? '' }}">
+            value="{{ old('celular') }}">
         </div>
-
+ 
         {{-- 5. DIRECCIÓN (VARCHAR 50) --}}
         <div class="form-group col-lg-12">
             <label for="txtDireccion">Dirección:</label>
             <input type="text" id="txtDireccion" name="direccion" class="form-control" 
-                   value="{{ $cliente->direccion ?? '' }}">
+            value="{{ old('direccion') }}">
         </div>
-
+ 
         {{-- 6. CORREO (VARCHAR 50) --}}
         <div class="form-group col-lg-6">
             <label for="txtCorreo">Correo Electrónico: *</label>
             <input type="email" id="txtCorreo" name="correo" class="form-control" 
-                   value="{{ $cliente->correo ?? '' }}" required autocomplete="email">
+            value="{{ old('correo') }}" required autocomplete="email">
         </div>
-
+ 
         {{-- 7. CLAVE (VARCHAR 150) --}}
         <div class="form-group col-lg-6">
             <label for="txtClave">Clave: *</label>
             <input type="password" id="txtClave" name="clave" class="form-control" 
                    value="" 
                    autocomplete="new-password"
-                   {{-- Solo se requiere la clave si es un registro nuevo --}}
-                   {{ empty($cliente->idcliente) ? 'required' : '' }}>
+                   >
             
             @if(isset($cliente->idcliente))
                 <small class="form-text text-muted">Deje vacío para no cambiar la clave.</small>
             @endif
         </div>
-
+ 
     </div>
 </form>
 </div>
@@ -148,7 +152,7 @@ if (isset($msg)) {
 </div>
 <script>
     $("#form1").validate();
-
+ 
     function guardar() {
         if ($("#form1").valid()) {
             modificado = false;
@@ -159,7 +163,7 @@ if (isset($msg)) {
             return false;
         }
     }
-
+ 
     function eliminar() {
         $.ajaxSetup({
             headers: {

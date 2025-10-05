@@ -11,24 +11,23 @@ class CreateClientesTable extends Migration
      *
      * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('clientes', function (Blueprint $table) {
-            $table->id('idcliente');
+             $table->id();
             $table->string('nombre', 50)->nullable();
             $table->string('apellido', 50)->nullable();
             $table->string('telefono', 50)->nullable();
             $table->string('direccion', 50)->nullable();
-            $table->string('dni', 50)->nullable();
             $table->string('celular', 50)->nullable();
-            $table->string('correo', 50)->nullable()->unique(); 
+            $table->string('correo', 50)->nullable()->unique();
             $table->string('clave', 150)->nullable();
             $table->timestamp('fecha_registro')->useCurrent()->nullable();
-
             $table->timestamps();
         });
     }
-
+    
+    
     /**
      * Reverse the migrations.
      *

@@ -7,126 +7,61 @@ use Illuminate\Http\Request;
 use App\Entidades\Cliente as EntidadCliente; // Usar alias para evitar conflictos
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class ClienteController extends Controller
 {
     public function index()
     {
         $titulo = "Clientes";
-        $cliente = new EntidadCliente();
-        $clientes = $cliente->obtenerTodos(); // Obtener todos los clientes usando la entidad
-        return view('sistema.cliente-nuevo', compact('titulo', 'clientes'));
+       
+        $clienteData = null; // Inicializar para la vista
+        return view('sistema.cliente-nuevo', compact('titulo',  ));
     }
 
-    public function guardar(Request $request)
-    {
-        $request->validate([
-            'nombre' => 'required|string|max:50',
-            'apellido' => 'nullable|string|max:50',
-            'telefono' => 'nullable|string|max:50',
-            'direccion' => 'nullable|string|max:50',
-            'dni' => 'nullable|string|max:50',
-            'celular' => 'nullable|string|max:50',
-            'correo' => 'nullable|email|max:50',
-            'clave' => 'nullable|string|max:150',
+  public function guardar(Request $request)
+{
+  
+  // Validar los datos del formulario
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'required|string',
+             'correo' => 'required|string|email', 
+            'clave' => 'required|string|min:6',
+             'apellido' => 'required|string|max:50',
+            'telefono' => 'required|string|max:50',
+            'direccion' => 'required|string|max:50',
+            'celular' => 'required|string|max:50',
         ]);
 
-        $cliente = new EntidadCliente();
-        $cliente->nombre = $request->input('nombre');
-        $cliente->apellido = $request->input('apellido');
-        $cliente->telefono = $request->input('telefono');
-        $cliente->direccion = $request->input('direccion');
-        $cliente->dni = $request->input('dni');
-        $cliente->celular = $request->input('celular');
-        $cliente->correo = $request->input('correo');
-        
-        // Encriptar la clave si se proporciona
-        $clave = $request->input('clave');
-        if (!empty($clave)) {
-            $cliente->clave = Hash::make($clave);
-        }
-        
-        $cliente->insertar();
 
-        $mensaje = 'Cliente creado correctamente';
+        // Retornar mensajes de error si la validación falla
+        if ($validator->fails()) {
+            
+ return redirect()->back()->with('error', $validator->errors());   
+
+        }
+
+// Crear el nuevo cliente
+            $cliente = EntidadCliente::create([
+                'nombre' => $request->nombre,
+                'correo' => $request->correo,
+                'clave' => bcrypt($request->clave),
+                'apellido' => $request->apellido,
+                'telefono' => $request->telefono,
+                'direccion' => $request->direccion,
+                'celular' => $request->celular,            
+]);
+
+$mensaje = 'Cliente creado correctamente';
         
         return redirect()->route('cliente.index')->with('mensaje', $mensaje);
-    }
+ 
+}
 
-    public function actualizar(Request $request, $idcliente)
-    {
-        $request->validate([
-            'nombre' => 'required|string|max:50',
-            'apellido' => 'nullable|string|max:50',
-            'telefono' => 'nullable|string|max:50',
-            'direccion' => 'nullable|string|max:50',
-            'dni' => 'nullable|string|max:50',
-            'celular' => 'nullable|string|max:50',
-            'correo' => 'nullable|email|max:50',
-            'clave' => 'nullable|string|max:150',
-        ]);
+ 
 
-        $cliente = new EntidadCliente();
-        $cliente->idcliente = $idcliente;
-        $cliente->nombre = $request->input('nombre');
-        $cliente->apellido = $request->input('apellido');
-        $cliente->telefono = $request->input('telefono');
-        $cliente->direccion = $request->input('direccion');
-        $cliente->dni = $request->input('dni');
-        $cliente->celular = $request->input('celular');
-        $cliente->correo = $request->input('correo');
-        
-        $clave = $request->input('clave');
-        if (!empty($clave)) {
-            $cliente->clave = Hash::make($clave);
-        }
-        
-        $cliente->guardar();
 
-        $mensaje = 'Cliente actualizado correctamente';
-        
-        return redirect()->route('cliente.index')->with('mensaje', $mensaje);
-    }
-
-    public function eliminar(Request $request)
-    {
-        $idcliente = $request->input('id');
-        
-        $cliente = new EntidadCliente();
-        $cliente->idcliente = $idcliente;
-        $cliente->obtenerPorId($idcliente);
-        $cliente->eliminar();
-
-        $mensaje = 'Cliente eliminado correctamente';
-        
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => $mensaje
-            ]);
-        }
-        
-        return redirect()->route('cliente.index')->with('mensaje', $mensaje);
-    }
     
-    public function cargarGrilla(Request $request)
-    {
-        $cliente = new EntidadCliente();
-        $clientes = $cliente->obtenerFiltrado($request);
-        
-        return response()->json([
-            'data' => $clientes
-        ]);
-    }
-    
-    public function editar($idcliente)
-    {
-        $titulo = "Editar Cliente";
-        $cliente = new EntidadCliente();
-        $clienteData = $cliente->obtenerPorId($idcliente);
-        
-        $clientes = [$clienteData]; // Para mantener la misma estructura que el index
-        
-        return view('sistema.cliente-nuevo', compact('titulo', 'clienteData', 'clientes'));
-    }
+  
+  
 }
