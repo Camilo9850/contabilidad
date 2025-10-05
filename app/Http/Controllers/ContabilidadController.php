@@ -27,7 +27,11 @@ class ContabilidadController extends Controller
     
     public function editar($id)
     {
-        $contabilidad = Contabilidad::find($id);
+        $contabilidad = DB::table('contabilidads')
+            ->leftJoin('sucursals', 'contabilidads.fk_id_sucursal', '=', 'sucursals.idsucursal')
+            ->select('contabilidads.*', 'sucursals.nombre as nombre_sucursal')
+            ->where('idcontabilidad', $id)
+            ->first();
         
         if (!$contabilidad) {
             abort(404, 'Registro de contabilidad no encontrado');
@@ -41,6 +45,7 @@ class ContabilidadController extends Controller
 
     public function guardar(Request $request)
     {
+    dd($request->all());
         $request->validate([
             'txtFecha' => 'required|date',
             'lstTipoMovimiento' => 'required|in:INGRESO,EGRESO,TRANSFERENCIA',
@@ -111,18 +116,23 @@ class ContabilidadController extends Controller
     
     public function cargarGrilla()
     {
-        $contabilidad = DB::table('contabilidads')->get();
+        $contabilidad = DB::table('contabilidads')
+            ->leftJoin('sucursals', 'contabilidads.fk_id_sucursal', '=', 'sucursals.idsucursal')
+            ->select('contabilidads.*', 'sucursals.nombre as nombre_sucursal')
+            ->get();
         
         $data = [];
         foreach ($contabilidad as $aContabilidad) {
             // Crear botones de acción
             $acciones = '<a href="/admin/contabilidad/editar/' . $aContabilidad->idcontabilidad . '" title="Editar" class="btn-accion"><i class="fa-solid fa-edit"></i></a>';
             
+            $nombreSucursal = $aContabilidad->nombre_sucursal ? $aContabilidad->nombre_sucursal : 'Sin sucursal';
+            
             $data[] = [
                 $aContabilidad->fecha_transaccion,
                 $aContabilidad->tipo_movimiento,
                 $aContabilidad->monto,
-                $aContabilidad->fk_id_sucursal,
+                $nombreSucursal, // Mostrar el nombre de la sucursal en lugar del ID
                 $aContabilidad->referencia_id,
                 $aContabilidad->descripcion,
                 $acciones

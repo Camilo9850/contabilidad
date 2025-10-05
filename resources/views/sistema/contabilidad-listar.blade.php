@@ -56,7 +56,7 @@ if (isset($msg)) {
         "pageLength": 25,
         "order": [[ 0, "asc" ]],
         "columnDefs": [
-            { "orderable": false, "targets": [7] } // Deshabilitar ordenación en la columna de acciones
+            { "orderable": false, "targets": [6] } // Deshabilitar ordenación en la columna de acciones
         ],
 	    "ajax": "{{ route('contabilidad.cargarGrilla') }}",
         "drawCallback": function() {

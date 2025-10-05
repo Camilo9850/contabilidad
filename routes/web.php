@@ -118,7 +118,21 @@ Route::post('/admin/contabilidad', 'ContabilidadController@guardar')->name('cont
 Route::post('/admin/contabilidad/eliminar', 'ContabilidadController@eliminar')->name('contabilidad.eliminar');
 Route::get('/admin/contabilidad/cargarGrilla', 'ContabilidadController@cargarGrilla')->name('contabilidad.cargarGrilla');
 
+/* --------------------------------------------- */
+/* CONTROLADOR CLIENTES                          */
+/* --------------------------------------------- */
+Route::get('/admin/cliente/nuevo', 'ClienteController@index')->name('cliente.index');
+Route::post('/admin/cliente', 'ClienteController@guardar')->name('cliente.guardar');
+Route::post('/admin/cliente/eliminar/{idcliente}', 'ClienteController@eliminar')->name('cliente.eliminar');
+Route::get('/admin/cliente/cargarGrilla', 'ClienteController@cargarGrilla')->name('cliente.cargarGrilla');
+Route::get('/admin/cliente/editar/{idcliente}', 'ClienteController@editar')->name('cliente.editar');
+Route::post('/admin/cliente/actualizar/{idcliente}', 'ClienteController@actualizar')->name('cliente.actualizar');
 
+
+
+/* --------------------------------------------- */
+/* CONTROLADOR FACTURACION                         */
+/* --------------------------------------------- */
 
 
 /* --------------------------------------------- */

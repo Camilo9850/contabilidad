@@ -65,38 +65,37 @@ if (isset($msg)) {
         @csrf
         <div class="row">
 
-            {{-- 1. CAMPO ID OCULTO (idcontabilidad) --}}
-            {{-- Usamos idcontabilidad ?? 0 y lo pasamos con el nombre 'id' --}}
+            {{-- CAMPO ID OCULTO (idcontabilidad) --}}
             <input type="hidden" id="id" name="id" class="form-control"
                 value="{{ $contabilidad->idcontabilidad ?? 0 }}" required>
 
-            {{-- 2. FECHA DE TRANSACCIÓN (fecha_transaccion) --}}
+            {{-- FECHA DE TRANSACCIÓN (fecha_transaccion) --}}
             <div class="form-group col-lg-6">
                 <label for="txtFecha">Fecha de Transacción: *</label>
                 <input type="date" id="txtFecha" name="txtFecha" class="form-control"
                     value="{{ $contabilidad->fecha_transaccion ?? \Carbon\Carbon::now()->format('Y-m-d') }}" required>
             </div>
 
-            {{-- 3. TIPO DE MOVIMIENTO (tipo_movimiento ENUM) --}}
+            {{-- TIPO DE MOVIMIENTO (tipo_movimiento ENUM) --}}
             <div class="form-group col-lg-6">
                 <label for="lstTipoMovimiento">Tipo de Movimiento: *</label>
                 <select id="lstTipoMovimiento" name="lstTipoMovimiento" class="form-control" required>
-                    <option value="" disabled selected>Seleccionar tipo</option>
+                    <option value="" disabled {{ !isset($contabilidad->tipo_movimiento) ? 'selected' : '' }}>Seleccionar tipo</option>
                     {{-- Opciones del ENUM: INGRESO, EGRESO, TRANSFERENCIA --}}
-                    <option value="INGRESO" {{ ($contabilidad->tipo_movimiento ?? '') == 'INGRESO' ? 'selected' : '' }}>Ingreso</option>
-                    <option value="EGRESO" {{ ($contabilidad->tipo_movimiento ?? '') == 'EGRESO' ? 'selected' : '' }}>Egreso</option>
-                    <option value="TRANSFERENCIA" {{ ($contabilidad->tipo_movimiento ?? '') == 'TRANSFERENCIA' ? 'selected' : '' }}>Transferencia</option>
+                    <option value="INGRESO" {{ (isset($contabilidad->tipo_movimiento) && $contabilidad->tipo_movimiento == 'INGRESO') ? 'selected' : '' }}>Ingreso</option>
+                    <option value="EGRESO" {{ (isset($contabilidad->tipo_movimiento) && $contabilidad->tipo_movimiento == 'EGRESO') ? 'selected' : '' }}>Egreso</option>
+                    <option value="TRANSFERENCIA" {{ (isset($contabilidad->tipo_movimiento) && $contabilidad->tipo_movimiento == 'TRANSFERENCIA') ? 'selected' : '' }}>Transferencia</option>
                 </select>
             </div>
 
-            {{-- 4. MONTO (monto DECIMAL) --}}
+            {{-- MONTO (monto DECIMAL) --}}
             <div class="form-group col-lg-6">
                 <label for="txtMonto">Monto: *</label>
                 <input type="number" id="txtMonto" name="txtMonto" class="form-control" step="0.01"
                     value="{{ $contabilidad->monto ?? 0.00 }}" required>
             </div>
 
-            {{-- 5. SUCURSAL (fk_id_sucursal) --}}
+            {{-- SUCURSAL (fk_id_sucursal) --}}
             <div class="form-group col-lg-6">
                 <label for="lstSucursal">Sucursal:</label>
                 <select id="lstSucursal" name="lstSucursal" class="form-control">
@@ -104,7 +103,7 @@ if (isset($msg)) {
                     @if(isset($sucursales))
                     @foreach($sucursales as $sucursal)
                     <option value="{{ $sucursal->idsucursal }}"
-                        {{ ($contabilidad->fk_id_sucursal ?? '') == $sucursal->idsucursal ? 'selected' : '' }}>
+                        {{ (isset($contabilidad->fk_id_sucursal) && $contabilidad->fk_id_sucursal == $sucursal->idsucursal) ? 'selected' : '' }}>
                         {{ $sucursal->nombre }}
                     </option>
                     @endforeach
@@ -112,20 +111,18 @@ if (isset($msg)) {
                 </select>
             </div>
 
-            {{-- 6. REFERENCIA ID (referencia_id) --}}
+            {{-- REFERENCIA ID (referencia_id) --}}
             <div class="form-group col-lg-6">
                 <label for="txtReferenciaId">Referencia ID (Factura/Pedido):</label>
                 <input type="number" id="txtReferenciaId" name="txtReferenciaId" class="form-control"
                     value="{{ $contabilidad->referencia_id ?? '' }}">
             </div>
 
-            {{-- 7. DESCRIPCIÓN (descripcion TEXT) --}}
+            {{-- DESCRIPCIÓN (descripcion TEXT) --}}
             <div class="form-group col-lg-12">
                 <label for="txtDescripcion">Descripción del Movimiento:</label>
                 <textarea id="txtDescripcion" name="txtDescripcion" class="form-control" rows="3">{{ $contabilidad->descripcion ?? '' }}</textarea>
             </div>
-
-            {{-- Nota: created_at y updated_at se manejan automáticamente por Laravel --}}
 
         </div>
     </form>
@@ -162,20 +159,34 @@ if (isset($msg)) {
     }
 
     function eliminar() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        
         $.ajax({
-            type: "GET",
-            url: "{{ asset('admin/contabilidad/eliminar') }}",
-            data: {
-                id: globalId
+            type: "POST",
+            url: "{{ route('contabilidad.eliminar') }}",
+            data: { 
+                id: globalId,
+                _token: $('meta[name="csrf-token"]').attr('content')
             },
             async: true,
             dataType: "json",
-            success: function(data) {
-                if (data.err = "0") {
-                    msgShow("Registro eliminado exitosamente.", "success");
+            success: function (data) {
+                if (data.success === true) {
+                    msgShow(data.message || "Registro eliminado exitosamente.", "success");
+                    setTimeout(function() {
+                        window.location.href = "/admin/contabilidad";
+                    }, 1500);
                 } else {
-                    msgShow(data.err, "danger");
+                    msgShow(data.message || data.err || "Error al eliminar el registro", "danger");
                 }
+                $('#mdlEliminar').modal('toggle');
+            },
+            error: function (xhr, status, error) {
+                msgShow("Error al eliminar el registro: " + error, "danger");
                 $('#mdlEliminar').modal('toggle');
             }
         });
