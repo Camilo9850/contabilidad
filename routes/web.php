@@ -121,6 +121,7 @@ Route::get('/admin/contabilidad/cargarGrilla', 'ContabilidadController@cargarGri
 /* --------------------------------------------- */
 /* CONTROLADOR CLIENTES                          */
 /* --------------------------------------------- */
+Route::get('/admin/cliente', 'ClienteController@listar')->name('cliente.listar');
 Route::get('/admin/cliente/nuevo', 'ClienteController@index')->name('cliente.index');
 Route::post('/admin/cliente', 'ClienteController@guardar')->name('cliente.guardar');
 Route::post('/admin/cliente/eliminar/{idcliente}', 'ClienteController@eliminar')->name('cliente.eliminar');
@@ -133,6 +134,13 @@ Route::post('/admin/cliente/actualizar/{idcliente}', 'ClienteController@actualiz
 /* --------------------------------------------- */
 /* CONTROLADOR FACTURACION                         */
 /* --------------------------------------------- */
+Route::get('/admin/facturacion/nuevo', 'FacturacionController@index')->name('facturacion.index');
+Route::get('/admin/facturacion', 'FacturacionController@listar')->name('facturacion.listar');
+Route::get('/admin/facturacion/{id}/editar', 'FacturacionController@editar')->name('facturacion.editar');
+Route::post('/admin/facturacion', 'FacturacionController@guardar')->name('factura.guardar');
+Route::put('/admin/facturacion/{id}', 'FacturacionController@guardar')->name('factura.actualizar');
+Route::post('/admin/facturacion/eliminar', 'FacturacionController@eliminar')->name('facturacion.eliminar');
+
 
 
 /* --------------------------------------------- */

@@ -15,7 +15,8 @@
         "laravel/tinker": "^2.0",
         "mercadopago/dx-php": "^2.4",
         "phpmailer/phpmailer": "^6.0",
-        "nesbot/carbon": "^2.52"
+        "nesbot/carbon": "^2.52",
+        "laravel-lang/lang": "^14.7"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

@@ -9,8 +9,8 @@
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/admin/home">Inicio</a></li>
-    <li class="breadcrumb-item"><a href="/admin/cliente">cliente;</a></li>
-    <li class="breadcrumb-item active">Modificar</li>
+    <li class="breadcrumb-item"><a href="{{ route('cliente.listar') }}">Clientes</a></li>
+    <li class="breadcrumb-item active">{{ isset($cliente) && $cliente->idcliente ? 'Editar Cliente' : 'Nuevo Cliente' }}</li>
 </ol>
 <ol class="toolbar">
         <li class="btn-item">
@@ -20,7 +20,7 @@
         </a>
     </li>
         <li class="btn-item">
-        <a title="Guardar" href="#" onclick="javascript: $('#modalGuardar').modal('toggle');">
+        <a title="Guardar" href="#" onclick="javascript: guardar();">
             <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
             <span>Guardar</span>
         </a>
@@ -61,8 +61,11 @@ if (isset($msg)) {
         echo '<script>msgShow("' . $msg["MSG"] . '", "' . $msg["ESTADO"] . '")</script>';
     }
     ?>
-    <form id="form1" method="POST" action="{{ route('cliente.guardar') }}">
+    <form id="form1" method="POST" action="{{ isset($cliente) && $cliente->idcliente ? route('cliente.actualizar', ['idcliente' => $cliente->idcliente]) : route('cliente.guardar') }}">
     @csrf
+    @if(isset($cliente) && $cliente->idcliente)
+        @method('POST')
+    @endif
     <div class="row">
         
     @if ($errors->any())
@@ -79,42 +82,42 @@ if (isset($msg)) {
         <div class="form-group col-lg-6">
             <label for="txtNombre">Nombre: *</label>
             <input type="text" id="txtNombre" name="nombre" class="form-control" 
-            value="{{ old('nombre') }}" required>
+            value="{{ isset($cliente) ? $cliente->nombre : old('nombre') }}" required>
         </div>
         
         {{-- 2. APELLIDO (VARCHAR 50) --}}
         <div class="form-group col-lg-6">
             <label for="txtApellido">Apellido:</label>
             <input type="text" id="txtApellido" name="apellido" class="form-control" 
-            value="{{ old('apellido') }}">
+            value="{{ isset($cliente) ? $cliente->apellido : old('apellido') }}">
         </div>
  
         {{-- 3. TELÉFONO (INT 10) --}}
         <div class="form-group col-lg-6">
             <label for="txtTelefono">Teléfono (Fijo):</label>
             <input type="number" id="txtTelefono" name="telefono" class="form-control" 
-            value="{{ old('telefono') }}">
+            value="{{ isset($cliente) ? $cliente->telefono : old('telefono') }}">
         </div>
         
         {{-- 4. CELULAR (VARCHAR 50) --}}
         <div class="form-group col-lg-6">
             <label for="txtCelular">Celular:</label>
             <input type="text" id="txtCelular" name="celular" class="form-control" 
-            value="{{ old('celular') }}">
+            value="{{ isset($cliente) ? $cliente->celular : old('celular') }}">
         </div>
  
         {{-- 5. DIRECCIÓN (VARCHAR 50) --}}
         <div class="form-group col-lg-12">
             <label for="txtDireccion">Dirección:</label>
             <input type="text" id="txtDireccion" name="direccion" class="form-control" 
-            value="{{ old('direccion') }}">
+            value="{{ isset($cliente) ? $cliente->direccion : old('direccion') }}">
         </div>
  
         {{-- 6. CORREO (VARCHAR 50) --}}
         <div class="form-group col-lg-6">
             <label for="txtCorreo">Correo Electrónico: *</label>
             <input type="email" id="txtCorreo" name="correo" class="form-control" 
-            value="{{ old('correo') }}" required autocomplete="email">
+            value="{{ isset($cliente) ? $cliente->correo : old('correo') }}" required autocomplete="email">
         </div>
  
         {{-- 7. CLAVE (VARCHAR 150) --}}
@@ -125,7 +128,7 @@ if (isset($msg)) {
                    autocomplete="new-password"
                    >
             
-            @if(isset($cliente->idcliente))
+            @if(isset($cliente) && $cliente->idcliente)
                 <small class="form-text text-muted">Deje vacío para no cambiar la clave.</small>
             @endif
         </div>
