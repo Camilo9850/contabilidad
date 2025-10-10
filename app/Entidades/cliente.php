@@ -20,6 +20,9 @@ class Cliente extends Model
         'clave', // Oculta la clave al convertir el modelo a JSON o array por seguridad
     ];
 
-// aqui se pondrían las relaciones hasmany, belongsTo... etc
+public function facturas()
+    {
+        return $this->hasMany(Facturations::class, 'cliente_id');
+    }
 
 }

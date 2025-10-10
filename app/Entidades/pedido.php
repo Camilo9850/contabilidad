@@ -2,120 +2,91 @@
 
 namespace App\Entidades;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request; 
+use Carbon\Carbon; // Para manejar fechas y horas
 
 class Pedido extends Model
 {
     protected $table = 'pedidos';
-    public $timestamps = false;
+    
+    // La clave primaria en la DB es 'idpedido'
+    protected $primaryKey = 'idpedido'; 
+    
+    // La tabla SÍ tiene las marcas de tiempo
+    public $timestamps = true; 
 
+    // Campos que existen en la tabla y que son asignables masivamente
     protected $fillable = [
-        'idpedido',
+        'cliente_id',
+        'estado',
+        'fk_usuario',
         'fecha',
-        'descripcion',
         'total',
-        'fk_idsucursal',
-        'fk_idcliente',
-        'fk_idestado',
     ];
 
-    public function cargarDesdeRequest($request)
+    // Casteo de tipos para manejo de fechas y decimales en PHP
+    protected $casts = [
+        'fecha' => 'date',
+        'hora' => 'string',
+        'subtotal' => 'decimal:2',
+        'total' => 'decimal:2',
+    ];
+    
+    // ---------------------------------------------
+    //  RELACIONES
+    // ---------------------------------------------
+
+    /**
+     * Define la relación con el Cliente al que pertenece el pedido.
+     */
+    public function cliente()
     {
-        $this->idpedido = $request->input('id') != "0" ? $request->input('id') : null;
-        $this->fecha = $request->input('txtFecha');
-        $this->descripcion = $request->input('txtDescripcion');
-        $this->total = $request->input('txtTotal');
-        $this->fk_idsucursal = $request->input('lstSucursal');
-        $this->fk_idcliente = $request->input('lstCliente');
-        $this->fk_idestado = $request->input('lstEstado');
+        // La tabla pedidos tiene fk_cliente que referencia a idcliente en la tabla clientes
+        return $this->belongsTo(Cliente::class, 'cliente_id', 'id'); 
     }
+    
+    // ---------------------------------------------
+    //  MÉTODOS
+    // ---------------------------------------------
 
-    public function obtenerTodos()
+    /**
+     * Mapea los campos del Request a las propiedades del modelo.
+     */
+    public function cargarDesdeRequest(Request $request)
     {
-        $sql = "SELECT
-                A.idpedido,
-                A.fecha,
-                A.descripcion,
-                A.total,
-                A.fk_idsucursal,
-                A.fk_idcliente,
-                A.fk_idestado
-                FROM pedidos A ORDER BY A.idpedido DESC";
-        return DB::select($sql);
+        // El ID se maneja por 'idpedido'
+        $this->idpedido = $request->input('id') != "0" ? $request->input('id') : $this->idpedido;
+        
+        // Mapeo de datos (usando nombres del formulario actualizados)
+        $this->cliente_id = $request->input('cliente_id');
+        $this->estado = $request->input('estado');
+        $this->fecha = $request->input('fecha');
+        $this->hora = $request->input('hora');
+        $this->subtotal = $request->input('subtotal');
+        $this->total = $request->input('total');
+        // sigan al milo
+        // O un valor por defecto si es necesario
     }
-
-    public function obtenerPorId($idpedido)
-    {
-        $sql = "SELECT
-                idpedido,
-                fecha,
-                descripcion,
-                total,
-                fk_idsucursal,
-                fk_idcliente,
-                fk_idestado
-                FROM pedidos WHERE idpedido = ?";
-        $lstRetorno = DB::select($sql, [$idpedido]);
-
-        if (count($lstRetorno) > 0) {
-            $this->idpedido = $lstRetorno[0]->idpedido;
-            $this->fecha = $lstRetorno[0]->fecha;
-            $this->descripcion = $lstRetorno[0]->descripcion;
-            $this->total = $lstRetorno[0]->total;
-            $this->fk_idsucursal = $lstRetorno[0]->fk_idsucursal;
-            $this->fk_idcliente = $lstRetorno[0]->fk_idcliente;
-            $this->fk_idestado = $lstRetorno[0]->fk_idestado;
-            return $this;
-        }
-        return null;
-    }
-
+    
+    /**
+     * Guarda el pedido en la base de datos
+     */
     public function guardar()
     {
-        $sql = "UPDATE pedidos SET
-                fecha=?,
-                descripcion=?,
-                total=?,
-                fk_idsucursal=?,
-                fk_idcliente=?,
-                fk_idestado=?
-                WHERE idpedido=?";
-        DB::update($sql, [
-            $this->fecha,
-            $this->descripcion,
-            $this->total,
-            $this->fk_idsucursal,
-            $this->fk_idcliente,
-            $this->fk_idestado,
-            $this->idpedido
-        ]);
+        return $this->save();
     }
-
-    public function eliminar()
+    
+    /**
+     * Obtiene un registro por su ID.
+     */
+    public function obtenerPorId($id)
     {
-        $sql = "DELETE FROM pedidos WHERE idpedido=?";
-        DB::delete($sql, [$this->idpedido]);
-    }
+        // Usando Eloquent con la clave primaria correcta:
+        return Pedido::where('idpedido', $id)->first();
 
-    public function insertar()
-    {
-        $sql = "INSERT INTO pedidos (
-                fecha,
-                descripcion,
-                total,
-                fk_idsucursal,
-                fk_idcliente,
-                fk_idestado
-            ) VALUES (?, ?, ?, ?, ?, ?)";
-        DB::insert($sql, [
-            $this->fecha,
-            $this->descripcion,
-            $this->total,
-            $this->fk_idsucursal,
-            $this->fk_idcliente,
-            $this->fk_idestado
-        ]);
-        return $this->idpedido = DB::getPdo()->lastInsertId();
     }
+    
+
 }

@@ -7,16 +7,30 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request; 
 use Illuminate\Support\Facades\Hash; // Necesario para la seguridad de la clave
 
-class Facturacion extends Model
+class Facturations extends Model
 {
-    protected $table = 'facturacions';
+    protected $table = 'facturations';
+
+
 
    protected $guarded = [];
+   
 
     protected $hidden = [
          // Oculta la clave al convertir el modelo a JSON o array por seguridad
     ];
 
-// aqui se pondrían las relaciones hasmany, belongsTo... etc
+public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'cliente_id');
+    }
+
+    
+
 
 }
+
+
+    
+
+// aqui se pondrían las relaciones hasmany, belongsTo... etc

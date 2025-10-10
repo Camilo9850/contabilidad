@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Factura;
-use App\Entidades\cliente as EntidadCliente; // Importar el modelo Cliente
+use App\Models\Facturations as Factura;
+use App\Entidades\cliente as EntidadCliente;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
-class FacturacionController extends Controller
+
+
+class FacturationsController extends Controller
 {
     public function index()
     {
@@ -19,7 +22,7 @@ class FacturacionController extends Controller
         $clientes = EntidadCliente::all();
         
         // Crear una nueva instancia vacía de Factura para que la vista funcione correctamente
-        $factura = new Factura([
+        $factura = new factura([
             'subtotal' => 0,
             'impuesto' => 0,
             'total_factura' => 0
@@ -28,43 +31,34 @@ class FacturacionController extends Controller
         
         return view('sistema.facturacion-nuevo', compact('titulo', 'clientes', 'factura', 'facturacion'));
     }
-
+    
     public function listar()
     {
-        $titulo = "Listado de facturas";
-        $facturas = Factura::with('cliente')->get(); // Asumiendo que tienes una relación definida
-        
-   
-        
-        return view('sistema.facturacion-nuevo', compact('titulo', 'facturas'));
+        $titulo = "Listado de Facturación";
+        $facturas = Factura::all();
+        return view('sistema.facturacion-listar', compact('titulo','facturas'));
     }
 
-    public function guardar(Request $request)
+  public function guardar(Request $request)
     {
 
        
         // ANTES - Registro de depuración inicial
         Log::info('=== INICIO PROCESO GUARDAR FACTURA ===');
-        info('Datos recibidos en request:', $request->all());
-        info('ID de factura recibido:', ['id' => $request->id]);
+        //info('Datos recibidos en request:', $request->all());
+        //info('ID de factura recibido:', ['id' => $request->id]);
         
         // Validar los datos del formulario (sin los campos calculados)
         $rules = [
-            'numero_factura' => 'required|string',
             'fecha' => 'required|date',
-            'fk_id_cliente' => 'required|exists:clientes,id',
+            'cliente_id' => 'required|exists:clientes,id',
             'subtotal' => 'required|numeric|min:0',
             'estado' => 'required|in:PENDIENTE,PAGADA,ANULADA'
         ];
 
-        // Ajustar la regla de unicidad para el número de factura según sea creación o actualización
-        if ($request->id > 0) {
-            $rules['numero_factura'] .= '|unique:facturacions,numero_factura,' . $request->id . ',id_factura';
-        } else {
-            $rules['numero_factura'] .= '|unique:facturacions,numero_factura';
-        }
+        
 
-        info('Reglas de validación aplicadas:', $rules);
+        //info('Reglas de validación aplicadas:', $rules);
 
         $validator = Validator::make($request->all(), $rules);
 
@@ -79,7 +73,7 @@ class FacturacionController extends Controller
                 ->withInput();
         }
         
-    Log::info('=== VALIDACION EXITOSA ===');
+        Log::info('=== VALIDACION EXITOSA ===');
         
         // Calcular impuesto y total factura
         Log::info('Calculando impuestos y totales...');
@@ -138,23 +132,10 @@ class FacturacionController extends Controller
                     ->with('msg', ['MSG' => 'Factura no encontrada', 'ESTADO' => 'danger']);
             }
             
-            Log::info('Actualizando factura existente en DB:', [
-                'id' => $factura->id_factura,
-                'datos_actualizar' => [
-                    'numero_factura' => $request->numero_factura,
-                    'fecha' => $request->fecha,
-                    'fk_id_cliente' => $request->fk_id_cliente,
-                    'subtotal' => $subtotal,
-                    'impuesto' => $impuesto,
-                    'total_factura' => $total_factura,
-                    'estado' => $request->estado
-                ]
-            ]);
             
             $factura->update([
-                'numero_factura' => $request->numero_factura,
                 'fecha' => $request->fecha,
-                'fk_id_cliente' => $request->fk_id_cliente,
+                'cliente_id' => $request->cliente_id,
                 'subtotal' => $subtotal,
                 'impuesto' => $impuesto,
                 'total_factura' => $total_factura,
@@ -169,18 +150,18 @@ class FacturacionController extends Controller
                 'datos_crear' => [
                     'numero_factura' => $request->numero_factura,
                     'fecha' => $request->fecha,
-                    'fk_id_cliente' => $request->fk_id_cliente,
+                    'cliente_id' => $request->cliente_id,
                     'subtotal' => $subtotal,
                     'impuesto' => $impuesto,
                     'total_factura' => $total_factura,
                     'estado' => $request->estado
                 ]
             ]);
-            
+            /// aqui va a fallar siempre por el numero de factura
             $factura = Factura::create([
-                'numero_factura' => $request->numero_factura,
+                'numero_factura' => Str::uuid(),
                 'fecha' => $request->fecha,
-                'fk_id_cliente' => $request->fk_id_cliente,
+                'cliente_id' => $request->cliente_id,
                 'subtotal' => $subtotal,
                 'impuesto' => $impuesto,
                 'total_factura' => $total_factura,
@@ -188,13 +169,13 @@ class FacturacionController extends Controller
             ]);
             
             $mensaje = 'Factura creada correctamente';
-            Log::info('Factura creada exitosamente', ['id_creado' => $factura->id_factura]);
+            Log::info('Factura creada exitosamente', ['id_creado' => $factura->id]);
         }
 
         // DESPUÉS - Finalización exitosa
         Log::info('=== PROCESO GUARDAR COMPLETADO ===', [
             'mensaje' => $mensaje,
-            'id_factura' => $factura->id_factura ?? 'no_disponible'
+            'factura' => $factura->id ?? 'no_disponible'
         ]);
 
         return redirect()->route('facturacion.listar')
@@ -204,7 +185,7 @@ class FacturacionController extends Controller
     public function editar($id)
     {
         $titulo = "Editar facturacion";
-        $factura = Factura::with('cliente')->find($id);
+        $factura = Factura::find($id); // Removemos 'with(cliente)' para evitar errores
         $clientes = EntidadCliente::all();
         
         if (!$factura) {
@@ -214,19 +195,20 @@ class FacturacionController extends Controller
         
         // También pasamos $facturacion para mantener compatibilidad con el JavaScript en la vista
         $facturacion = $factura;
+      
         
         return view('sistema.facturacion-nuevo', compact('titulo', 'factura', 'facturacion', 'clientes'));
     }
-    
+
     public function eliminar(Request $request)
     {
         $id = $request->id;
         $factura = Factura::find($id);
-        
+
         if (!$factura) {
             return response()->json(['success' => false, 'message' => 'Factura no encontrada']);
         }
-        
+
         try {
             $factura->delete();
             return response()->json(['success' => true, 'message' => 'Factura eliminada correctamente']);

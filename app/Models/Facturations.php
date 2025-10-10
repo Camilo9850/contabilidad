@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Factura extends Model
+class Facturations extends Model
 {
+    use HasFactory;
+    
     protected $table = 'facturacions';
-    protected $primaryKey = 'id_factura';
+    // Usamos la clave primaria predeterminada 'id' en lugar de 'id_factura'
+    
     protected $fillable = [
         'numero_factura',
         'fecha',
@@ -17,7 +21,7 @@ class Factura extends Model
         'total_factura',
         'estado'
     ];
-
+    
     public $timestamps = true;
     
     /**

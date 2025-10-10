@@ -134,12 +134,35 @@ Route::post('/admin/cliente/actualizar/{idcliente}', 'ClienteController@actualiz
 /* --------------------------------------------- */
 /* CONTROLADOR FACTURACION                         */
 /* --------------------------------------------- */
-Route::get('/admin/facturacion/nuevo', 'FacturacionController@index')->name('facturacion.index');
-Route::get('/admin/facturacion', 'FacturacionController@listar')->name('facturacion.listar');
-Route::get('/admin/facturacion/{id}/editar', 'FacturacionController@editar')->name('facturacion.editar');
-Route::post('/admin/facturacion', 'FacturacionController@guardar')->name('factura.guardar');
-Route::put('/admin/facturacion/{id}', 'FacturacionController@guardar')->name('factura.actualizar');
-Route::post('/admin/facturacion/eliminar', 'FacturacionController@eliminar')->name('facturacion.eliminar');
+Route::get('/admin/facturacion/nuevo', 'FacturationsController@index')->name('facturacion.index');
+Route::get('/admin/facturacion', 'FacturationsController@listar')->name('facturacion.listar');
+Route::get('/admin/facturacion/{id}/editar', 'FacturationsController@editar')->name('facturacion.editar');
+Route::post('/admin/facturacion', 'FacturationsController@guardar')->name('factura.guardar');
+Route::put('/admin/facturacion/{id}', 'FacturationsController@guardar')->name('factura.actualizar');
+Route::post('/admin/facturacion/eliminar', 'FacturationsController@eliminar')->name('facturacion.eliminar');
+
+
+/* --------------------------------------------- */
+/* CONTROLADOR PRODUCTS                         */
+/* --------------------------------------------- */
+Route::get('/admin/producto/nuevo', 'ProductsController@index')->name('producto.index');
+Route::get('/admin/producto', 'ProductsController@listar')->name('producto.listar');
+Route::get('/admin/producto/{id}/editar', 'ProductsController@editar')->name('producto.editar');
+Route::post('/admin/producto', 'ProductsController@guardar')->name('producto.guardar');
+Route::put('/admin/producto/{id}', 'ProductsController@actualizar')->name('producto.actualizar');
+Route::post('/admin/producto/eliminar', 'ProductsController@eliminar')->name('producto.eliminar');
+
+/* --------------------------------------------- */
+/* CONTROLADOR PEDIDOS                         */
+/* --------------------------------------------- */
+Route::get('/admin/pedido/nuevo', 'PedidosController@index')->name('pedido.index');
+Route::get('/admin/pedido', 'PedidosController@listar')->name('pedido.listar');
+Route::get('/admin/pedido/editar/{id}', 'PedidosController@editar')->name('pedido.editar');
+Route::post('/admin/pedido', 'PedidosController@guardar')->name('pedido.guardar');
+Route::put('/admin/pedido/{id}', 'PedidosController@actualizar')->name('pedido.actualizar');
+Route::post('/admin/pedido/eliminar/{id}', 'PedidosController@eliminar')->name('pedido.eliminar');
+
+
 
 
 

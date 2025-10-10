@@ -16,7 +16,10 @@
         "mercadopago/dx-php": "^2.4",
         "phpmailer/phpmailer": "^6.0",
         "nesbot/carbon": "^2.52",
-        "laravel-lang/lang": "^14.7"
+        "laravel-lang/lang": "^14.7",
+        "intervention/image-laravel": "^1.5",
+        "intervention/image": "^3.11",
+        "laravel/telescope": "^5.14"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

@@ -78,9 +78,8 @@
         @endif
 
         <div class="row">
-            {{-- Campo ID oculto --}}
-            <input type="hidden" id="id" name="id" class="form-control" value="{{ $factura->id ?? 0 }}">
-
+          
+         
             {{-- Número de factura --}}
             <div class="form-group col-lg-6">
                 <label for="txtNumeroFactura">Número de Factura: *</label>
@@ -98,7 +97,7 @@
             {{-- Cliente --}}
             <div class="form-group col-lg-6">
                 <label for="lstCliente">Cliente: *</label>
-                <select id="lstCliente" name="fk_id_cliente" class="form-control">
+                <select id="lstCliente" name="cliente_id" class="form-control">
                     <option value="" disabled selected>Seleccionar Cliente</option>
                     @if(isset($clientes))
                         @foreach ($clientes as $cliente)

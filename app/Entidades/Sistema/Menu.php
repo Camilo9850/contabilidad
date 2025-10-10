@@ -2,8 +2,11 @@
 
 namespace App\Entidades\Sistema;
 
-use DB;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use DB;
+use Session;
+
 
 class Menu extends Model
 {
@@ -21,7 +24,7 @@ class Menu extends Model
     public function cargarDesdeRequest($request) {
         $this->idmenu = $request->input('id') != "0" ? $request->input('id') : $this->idmenu;
         $this->nombre = $request->input('txtNombre');
-        $this->id_padre = $request->input('lstMenuPadre');
+        $this->id_padre = $request->input('lstMenuPadre') != "" ? $request->input('lstMenuPadre') : null; // Convertir cadena vacía a NULL
         $this->orden = $request->input('txtOrden') != "" ? $request->input('txtOrden') : 0;
         $this->activo = $request->input('lstActivo');
         $this->url = $request->input('txtUrl');
@@ -125,14 +128,22 @@ class Menu extends Model
 
     public function guardar() {
         $sql = "UPDATE sistema_menues SET
-            nombre='$this->nombre',
-            id_padre='$this->id_padre',
-            orden=$this->orden,
-            activo='$this->activo',
-            url='$this->url',
-            css='$this->css'
+            nombre=?,
+            id_padre=?,
+            orden=?,
+            activo=?,
+            url=?,
+            css=?
             WHERE idmenu=?";
-        $affected = DB::update($sql, [$this->idmenu]);
+        $affected = DB::update($sql, [
+            $this->nombre,
+            $this->id_padre !== '' ? $this->id_padre : null, // Convertir cadena vacía a NULL
+            $this->orden,
+            $this->activo,
+            $this->url,
+            $this->css,
+            $this->idmenu
+        ]);
     }
 
     public function eliminar()
@@ -154,7 +165,7 @@ class Menu extends Model
             ) VALUES (?, ?, ?, ?, ?, ?);";
         $result = DB::insert($sql, [
             $this->nombre,
-            $this->id_padre,
+            $this->id_padre !== '' ? $this->id_padre : null, // Convertir cadena vacía a NULL
             $this->orden,
             $this->activo,
             $this->url,

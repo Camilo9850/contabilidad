@@ -1,4 +1,14 @@
-public function cargarGrilla()
+<?php
+// This file appears to contain a function that should be part of a controller
+// The same function already exists in app/Http/Controllers/ContabilidadController.php
+// This standalone file has been fixed with proper PHP tags
+
+require_once 'vendor/autoload.php';
+
+use Illuminate\Support\Facades\DB;
+
+// Function to load grid data for contabilidad
+function cargarGrilla()
 {
     $contabilidad = DB::table('contabilidads')->get();
     
@@ -24,4 +34,11 @@ public function cargarGrilla()
         "recordsFiltered" => count($data),
         "data" => $data
     ]);
+}
+
+// If this file is called directly, execute the function
+if (basename(__FILE__) == basename($_SERVER['SCRIPT_NAME'])) {
+    // This would only execute if the function returns a response object
+    // Better to include this in a controller instead of using this file directly
+    echo "This file contains the cargarGrilla function. It should be part of a controller instead.";
 }
